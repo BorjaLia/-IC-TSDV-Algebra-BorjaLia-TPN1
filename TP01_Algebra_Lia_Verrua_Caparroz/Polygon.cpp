@@ -41,7 +41,7 @@ bool Polygon::addPoint(Vector2 point, bool force)
 	{
 		line = { this->points[i], this->points[i + 1] };
 
-		if (CheckCollisionLines(currentLine.start, currentLine.end, line.start, line.end, collision)) {
+		if (LinesCollision(currentLine, line, collision)) {
 
 			DrawCircleV(*collision, 10, MAGENTA);
 
@@ -63,8 +63,6 @@ bool Polygon::addPoint(Vector2 point, bool force)
 		delete collision;
 		return false;
 	}
-
-
 }
 
 void Polygon::offsetPoints(Vector2 offset)

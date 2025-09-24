@@ -140,11 +140,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Polygon.cpp" />
+    <ClCompile Include="PolygonManager.cpp" />
     <ClCompile Include="TP01_Algebra_Lia_Verrua_Caparroz.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Globals.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Polygon.h" />
+    <ClInclude Include="PolygonManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

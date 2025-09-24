@@ -1,13 +1,8 @@
 #pragma once
 #include "raylib.h"
-#include <Vector>
+#include "Globals.h"
+#include "PolygonManager.h"
 
-struct Line {
-
-	Vector2 start;
-	Vector2 end;
-
-};
 
 class Polygon
 {

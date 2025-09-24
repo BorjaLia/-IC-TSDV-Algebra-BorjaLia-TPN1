@@ -1,7 +1,9 @@
 #include <iostream>
 #include "raylib.h"
 #include "Polygon.h"
+#include "PolygonManager.h"
 #include "Point.h"
+#include "Globals.h"
 
 //------------------------------------------------------------------------------------
 //							Instrucciones
@@ -75,36 +77,51 @@ void main()
 			}
 		}
 
-		if (IsMouseButtonDown(0)) {
 
-			heldTime += deltaTime;
-
-			if (heldTime >= holdThreshold) {
-				if (selectedPolygon != nullptr) {
-					selectedPolygon = nullptr;
-				}
-				else if (currentPolygon.addPoint(mouse)) {
-					pointsCreated++;
-					std::cout << "New Point: " << pointsCreated << std::endl;
-					lastPos = mouse;
-				}
-				heldTime -= deltaTime * 1.5f;
-			}
-		}
-		else if (IsMouseButtonReleased(0) && heldTime < holdThreshold) {
-			heldTime = 0.0f;
-
+		if (IsMouseButtonDown(0) && PointsDistance({ lastPos,mouse }) > 10) {
 			if (selectedPolygon != nullptr) {
 				selectedPolygon = nullptr;
 			}
 			else if (currentPolygon.addPoint(mouse)) {
+				pointsCreated++;
+				std::cout << "New Point: " << pointsCreated << std::endl;
 				lastPos = mouse;
 			}
-
 		}
 		else {
 			pointsCreated = 0;
 		}
+
+		//if (IsMouseButtonDown(0)) {
+
+		//	heldTime += deltaTime;
+
+		//	if (heldTime >= holdThreshold) {
+		//		if (selectedPolygon != nullptr) {
+		//			selectedPolygon = nullptr;
+		//		}
+		//		else if (currentPolygon.addPoint(mouse)) {
+		//			pointsCreated++;
+		//			std::cout << "New Point: " << pointsCreated << std::endl;
+		//			lastPos = mouse;
+		//		}
+		//		heldTime -= deltaTime * 1.5f;
+		//	}
+		//}
+		//else if (IsMouseButtonReleased(0) && heldTime < holdThreshold) {
+		//	heldTime = 0.0f;
+
+		//	if (selectedPolygon != nullptr) {
+		//		selectedPolygon = nullptr;
+		//	}
+		//	else if (currentPolygon.addPoint(mouse)) {
+		//		lastPos = mouse;
+		//	}
+
+		//}
+		//else {
+		//	pointsCreated = 0;
+		//}
 
 		if (IsMouseButtonPressed(1)) {
 
@@ -114,7 +131,7 @@ void main()
 
 					for (int j = 0; j < polygons[i].getPoints().size() - 1; j++) {
 
-						if (CheckCollisionCircleLine(mouse, 15, polygons[i].getPoints()[j], polygons[i].getPoints()[j + 1])) {
+						if (CircleLineCollision(mouse, 15, { polygons[i].getPoints()[j], polygons[i].getPoints()[j + 1] })) {
 
 							selectedPolygon = &polygons[i];
 							std::cout << "Id: " << selectedPolygon->getId() << std::endl;
@@ -125,7 +142,7 @@ void main()
 
 			}
 		}
-		else if(IsMouseButtonReleased(1)){
+		else if (IsMouseButtonReleased(1)) {
 			std::cout << "nullptr" << std::endl;
 			selectedPolygon = nullptr;
 		}
@@ -227,7 +244,8 @@ void main()
 					{
 						for (int j = 0; j < polygon.size() - 1; j++) {
 
-							if (CheckCollisionLines(polygon.getPoints()[j], polygon.getPoints()[j + 1], currentPolygon.getPoints()[i], currentPolygon.getPoints()[i + 1], collision)) {
+							//if (CheckCollisionLines(polygon.getPoints()[j], polygon.getPoints()[j + 1], currentPolygon.getPoints()[i], currentPolygon.getPoints()[i + 1], collision)) {
+							if (LinesCollision({ polygon.getPoints()[j], polygon.getPoints()[j + 1] }, { currentPolygon.getPoints()[i], currentPolygon.getPoints()[i + 1] }, collision)) {
 
 								collisionColor.r = (currentPolygon.getColor().r / 2) + (polygon.getColor().r / 2);
 								collisionColor.g = (currentPolygon.getColor().g / 2) + (polygon.getColor().g / 2);
@@ -242,9 +260,9 @@ void main()
 			}
 		}
 
-		for (Point point : collisions)
+		for (int i = 0; i < collisions.size();i++)
 		{
-			DrawCircleV(point.pos, 10, point.color);
+			DrawCircleV(collisions[i].pos, 10, collisions[i].color);
 		}
 
 		EndDrawing();
