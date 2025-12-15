@@ -1,320 +1,55 @@
 #include "PolygonManager.h"
 
-bool PointLineCollision(Line line, Vector2 point)
-{
-	float x0 = line.start.x;
-	float y0 = line.start.y;
-	float x1 = line.end.x;
-	float y1 = line.end.y;
-
-	bool isHigh = false;
-
-	float dx;
-	float dy;
-
-	float xi = 1.0f;
-	float yi = 1.0f;
-
-	float temp = 0.0f;
-
-
-	if (abs(y1 - y0) < abs(x1 - x0)) {
-		isHigh = false;
-		if (x0 > x1) {
-			temp = x0;
-			x0 = x1;
-			x1 = temp;
-			temp = y0;
-			y0 = y1;
-			y1 = temp;
-		}
-	}
-	else {
-		isHigh = true;
-		if (y0 > y1) {
-			temp = x0;
-			x0 = x1;
-			x1 = temp;
-			temp = y0;
-			y0 = y1;
-			y1 = temp;
-		}
-	}
-
-	dx = x1 - x0;
-	dy = y1 - y0;
-	if (isHigh) {
-
-		xi = 1.0f;
-
-		float x = 0.0f;
-
-		float d = (2.0f * dx) - dy;
-
-		if (dx < 0.0f) {
-			xi = -1.0f;
-			dx = -dx;
-		}
-		d = (2.0f * dx) - dy;
-		x = x0;
-
-		for (float y = y0; y <= y1; y++)
-		{
-
-			if (x == point.x && y == point.y) {
-				return true;
-			}
-			if (d > 0.0f) {
-				x = x + xi;
-				d = d + (2.0f * (dx - dy));
-			}
-			else {
-				d = d + 2.0f * dx;
-			}
-		}
-	}
-	else {
-		yi = 1.0f;
-
-		float y = 0.0f;
-
-		float d = (2.0f * dx) - dy;
-
-		if (dy < 0.0f) {
-			yi = -1.0f;
-			dy = -dy;
-		}
-		d = (2.0f * dy) - dx;
-		y = y0;
-
-		for (float x = x0; x <= x1; x++)
-		{
-			if (x == point.x && y == point.y) {
-				return true;
-			}
-			if (d > 0.0f) {
-				y = y + yi;
-				d = d + (2.0f * (dy - dx));
-			}
-			else {
-				d = d + 2.0f * dy;
-			}
-		}
-	}
-	return false;
-}
-
 bool LinesCollision(Line line0, Line line1, Vector2* collision)
 {
-	float x0 = line0.start.x;
-	float y0 = line0.start.y;
-	float x1 = line0.end.x;
-	float y1 = line0.end.y;
+	float x1 = line0.start.x, y1 = line0.start.y;
+	float x2 = line0.end.x, y2 = line0.end.y;
+	float x3 = line1.start.x, y3 = line1.start.y;
+	float x4 = line1.end.x, y4 = line1.end.y;
 
-	bool isHigh = false;
+	float den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 
-	float dx;
-	float dy;
-
-	float xi = 1.0f;
-	float yi = 1.0f;
-
-	float temp = 0.0f;
-
-
-	if (abs(y1 - y0) < abs(x1 - x0)) {
-		isHigh = false;
-		if (x0 > x1) {
-			temp = x0;
-			x0 = x1;
-			x1 = temp;
-			temp = y0;
-			y0 = y1;
-			y1 = temp;
-		}
-	}
-	else {
-		isHigh = true;
-		if (y0 > y1) {
-			temp = x0;
-			x0 = x1;
-			x1 = temp;
-			temp = y0;
-			y0 = y1;
-			y1 = temp;
-		}
+	if (std::abs(den) < 1e-5f)
+	{
+		return false;
 	}
 
-	dx = x1 - x0;
-	dy = y1 - y0;
-	if (isHigh) {
+	float t = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / den;
+	float u = -((x1 - x2) * (y1 - y3) - (y1 - y2) * (x1 - x3)) / den;
 
-		xi = 1.0f;
-
-		float x = 0.0f;
-
-		float d = (2.0f * dx) - dy;
-
-		if (dx < 0.0f) {
-			xi = -1.0f;
-			dx = -dx;
-		}
-		d = (2.0f * dx) - dy;
-		x = x0;
-
-		for (float y = y0; y <= y1; y++)
+	if (t >= 0 && t <= 1 && u >= 0 && u <= 1)
+	{
+		if (collision != nullptr)
 		{
-
-			if (PointLineCollision(line1, { (float)x,(float)y })) {
-				collision->x = x;
-				collision->y = y;
-				return true;
-			}
-			if (d > 0.0f) {
-				x = x + xi;
-				d = d + (2.0f * (dx - dy));
-			}
-			else {
-				d = d + 2.0f * dx;
-			}
+			collision->x = x1 + t * (x2 - x1);
+			collision->y = y1 + t * (y2 - y1);
 		}
+		return true;
 	}
-	else {
-		yi = 1.0f;
 
-		float y = 0.0f;
-
-		float d = (2.0f * dx) - dy;
-
-		if (dy < 0.0f) {
-			yi = -1.0f;
-			dy = -dy;
-		}
-		d = (2.0f * dy) - dx;
-		y = y0;
-
-		for (float x = x0; x <= x1; x++)
-		{
-			if (PointLineCollision(line1, { (float)x,(float)y })) {
-				collision->x = x;
-				collision->y = y;
-				return true;
-			}
-			if (d > 0.0f) {
-				y = y + yi;
-				d = d + (2.0f * (dy - dx));
-			}
-			else {
-				d = d + 2.0f * dy;
-			}
-		}
-	}
 	return false;
 }
 
 bool CircleLineCollision(Vector2 center, float radius, Line line)
 {
+	float lineLen = PointsDistance(line);
 
-	float x0 = line.start.x;
-	float y0 = line.start.y;
-	float x1 = line.end.x;
-	float y1 = line.end.y;
-
-	bool isHigh = false;
-
-	float dx;
-	float dy;
-
-	float xi = 1.0f;
-	float yi = 1.0f;
-
-	float temp = 0.0f;
-
-
-	if (abs(y1 - y0) < abs(x1 - x0)) {
-		isHigh = false;
-		if (x0 > x1) {
-			temp = x0;
-			x0 = x1;
-			x1 = temp;
-			temp = y0;
-			y0 = y1;
-			y1 = temp;
-		}
-	}
-	else {
-		isHigh = true;
-		if (y0 > y1) {
-			temp = x0;
-			x0 = x1;
-			x1 = temp;
-			temp = y0;
-			y0 = y1;
-			y1 = temp;
-		}
+	if (lineLen == 0)
+	{
+		return PointsDistance(center.x, center.y, line.start.x, line.start.y) <= radius;
 	}
 
-	dx = x1 - x0;
-	dy = y1 - y0;
-	if (isHigh) {
+	float dx = line.end.x - line.start.x;
+	float dy = line.end.y - line.start.y;
 
-		xi = 1.0f;
+	float t = ((center.x - line.start.x) * dx + (center.y - line.start.y) * dy) / (lineLen * lineLen);
 
-		float x = 0.0f;
+	t = std::max(0.0f, std::min(1.0f, t));
 
-		float d = (2.0f * dx) - dy;
+	float closestX = line.start.x + t * dx;
+	float closestY = line.start.y + t * dy;
 
-		if (dx < 0.0f) {
-			xi = -1.0f;
-			dx = -dx;
-		}
-		d = (2 * dx) - dy;
-		x = x0;
-
-		for (float y = y0; y <= y1; y++)
-		{
-
-			if (PointsDistance(x, y, center.x, center.y) < radius) {
-				return true;
-			}
-			if (d > 0.0f) {
-				x = x + xi;
-				d = d + (2.0f * (dx - dy));
-			}
-			else {
-				d = d + 2.0f * dx;
-			}
-		}
-	}
-	else {
-		yi = 1.0f;
-
-		float y = 0.0f;
-
-		float d = (2.0f * dx) - dy;
-
-		if (dy < 0.0f) {
-			yi = -1.0f;
-			dy = -dy;
-		}
-		d = (2.0f * dy) - dx;
-		y = y0;
-
-		for (float x = x0; x <= x1; x++)
-		{
-			if (PointsDistance(x, y, center.x, center.y) < radius) {
-				return true;
-			}
-			if (d > 0.0f) {
-				y = y + yi;
-				d = d + (2.0f * (dy - dx));
-			}
-			else {
-				d = d + 2 * dy;
-			}
-		}
-	}
-	return false;
+	return PointsDistance(center.x, center.y, closestX, closestY) <= radius;
 }
 
 float PointsDistance(float x0, float y0, float x1, float y1)

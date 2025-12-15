@@ -92,37 +92,6 @@ void main()
 			pointsCreated = 0;
 		}
 
-		//if (IsMouseButtonDown(0)) {
-
-		//	heldTime += deltaTime;
-
-		//	if (heldTime >= holdThreshold) {
-		//		if (selectedPolygon != nullptr) {
-		//			selectedPolygon = nullptr;
-		//		}
-		//		else if (currentPolygon.addPoint(mouse)) {
-		//			pointsCreated++;
-		//			std::cout << "New Point: " << pointsCreated << std::endl;
-		//			lastPos = mouse;
-		//		}
-		//		heldTime -= deltaTime * 1.5f;
-		//	}
-		//}
-		//else if (IsMouseButtonReleased(0) && heldTime < holdThreshold) {
-		//	heldTime = 0.0f;
-
-		//	if (selectedPolygon != nullptr) {
-		//		selectedPolygon = nullptr;
-		//	}
-		//	else if (currentPolygon.addPoint(mouse)) {
-		//		lastPos = mouse;
-		//	}
-
-		//}
-		//else {
-		//	pointsCreated = 0;
-		//}
-
 		if (IsMouseButtonPressed(1)) {
 
 			DrawCircleV(mouse, 15, RAYWHITE);
@@ -218,7 +187,6 @@ void main()
 			selectedPolygon->offsetPoints(mouseDelta);
 		}
 
-
 		BeginDrawing();
 		ClearBackground(BLACK);
 
@@ -227,16 +195,16 @@ void main()
 			currentPolygon.Draw(WHITE);
 		}
 
-		for (Polygon polygon : polygons)
+		for (Polygon &polygon : polygons)
 		{
 			polygon.Draw();
 		}
 
 		collisions.clear();
 
-		for (Polygon currentPolygon : polygons)
+		for (Polygon &currentPolygon : polygons)
 		{
-			for (Polygon polygon : polygons) {
+			for (Polygon &polygon : polygons) {
 
 				if (polygon.getId() != currentPolygon.getId() && polygons.size() > 1) {
 
@@ -244,7 +212,6 @@ void main()
 					{
 						for (int j = 0; j < polygon.size() - 1; j++) {
 
-							//if (CheckCollisionLines(polygon.getPoints()[j], polygon.getPoints()[j + 1], currentPolygon.getPoints()[i], currentPolygon.getPoints()[i + 1], collision)) {
 							if (LinesCollision({ polygon.getPoints()[j], polygon.getPoints()[j + 1] }, { currentPolygon.getPoints()[i], currentPolygon.getPoints()[i + 1] }, collision)) {
 
 								collisionColor.r = (currentPolygon.getColor().r / 2) + (polygon.getColor().r / 2);
