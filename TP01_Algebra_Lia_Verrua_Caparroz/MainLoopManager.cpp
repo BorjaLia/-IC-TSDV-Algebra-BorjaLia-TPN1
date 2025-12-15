@@ -13,7 +13,7 @@ void mainLoop()
 
 	int pointsCreated = 0;
 
-	InitWindow(screenWidth, screenHeight, "Main");
+	InitWindow(screenWidth, screenHeight, "TP01 Algebra - Borja Lia - entrega final");
 	SetTargetFPS(fps);
 
 	std::vector<Polygon> polygons;
@@ -40,145 +40,168 @@ void mainLoop()
 
 		MouseUpdate(mouseDelta, mouse, selectedPolygon, currentPolygon, lastPos);
 
-		if (IsMouseButtonDown(0) && PointsDistance({ lastPos,mouse }) > 10)
-		{
-			if (selectedPolygon != nullptr)
-			{
-				selectedPolygon = nullptr;
-			}
-			else if (currentPolygon.addPoint(mouse))
-			{
-				pointsCreated++;
-				std::cout << "New Point: " << pointsCreated << std::endl;
-				lastPos = mouse;
-			}
-		}
-		else
-		{
-			pointsCreated = 0;
-		}
+		AddPoint(lastPos, mouse, selectedPolygon, currentPolygon, pointsCreated);
 
-		if (IsMouseButtonPressed(1))
-		{
+		SelectShape(mouse, selectedPolygon, polygons);
 
-			DrawCircleV(mouse, 15, RAYWHITE);
-			if (selectedPolygon == nullptr)
-			{
-				for (int i = 0; i < polygons.size();i++)
-				{
+		CloseShape(currentPolygon, currentColor, polygons);
 
-					for (int j = 0; j < polygons[i].getPoints().size() - 1; j++)
-					{
+		DeleteFunctions(heldTime, deltaTime, holdThreshold, selectedPolygon, currentPolygon, lastPos, polygons);
 
-						if (CircleLineCollision(mouse, 15, { polygons[i].getPoints()[j], polygons[i].getPoints()[j + 1] }))
-						{
-
-							selectedPolygon = &polygons[i];
-							std::cout << "Id: " << selectedPolygon->getId() << std::endl;
-							std::cout << "size: " << selectedPolygon->size() << std::endl;
-						}
-					}
-				}
-
-			}
-		}
-		else if (IsMouseButtonReleased(1))
-		{
-			std::cout << "nullptr" << std::endl;
-			selectedPolygon = nullptr;
-		}
-
-		if (IsKeyPressed(KEY_ENTER))
-		{
-
-			if (currentPolygon.size() > 2)
-			{
-
-				if (currentPolygon.addPoint(currentPolygon.getPoints()[0]))
-				{
-
-					currentColor.r = rand() % 255;
-					currentColor.g = rand() % 255;
-					currentColor.b = rand() % 255;
-
-					currentPolygon.addId();
-
-					currentPolygon.setColor(currentColor);
-					polygons.push_back(currentPolygon);
-
-					currentPolygon.Clear();
-				}
-			}
-		}
-
-		if (IsKeyDown(KEY_BACKSPACE))
-		{
-
-			heldTime += deltaTime;
-
-			if (heldTime >= holdThreshold)
-			{
-				if (selectedPolygon == nullptr)
-				{
-					currentPolygon.deletePoint();
-					if (currentPolygon.size() > 1)
-					{
-						lastPos = currentPolygon.getPoints()[currentPolygon.size() - 1];
-					}
-					else
-					{
-						lastPos = { -100,-100 };
-					}
-				}
-				heldTime -= deltaTime * 2.0f;
-			}
-		}
-		else if (IsKeyReleased(KEY_BACKSPACE))
-		{
-			heldTime = 0.0f;
-		}
-
-		if (IsKeyPressed(KEY_BACKSPACE))
-		{
-
-			if (selectedPolygon == nullptr)
-			{
-				currentPolygon.deletePoint();
-				if (currentPolygon.size() > 1)
-				{
-					lastPos = currentPolygon.getPoints()[currentPolygon.size() - 1];
-				}
-				else
-				{
-					lastPos = { -100,-100 };
-				}
-			}
-			else
-			{
-
-				for (int i = 0; i < polygons.size(); i++)
-				{
-					std::cout << "Trying to delete: " << i << std::endl;
-					if ((*selectedPolygon).getId() == polygons[i].getId())
-					{
-						polygons.erase(polygons.begin() + i);
-						selectedPolygon = nullptr;
-						std::cout << "Delete complete" << std::endl;
-						i = polygons.size();
-					}
-				}
-			}
-		}
-
-		if (selectedPolygon != nullptr)
-		{
-			selectedPolygon->offsetPoints(mouseDelta);
-		}
+		UpdateShapePos(selectedPolygon, mouseDelta);
 
 		Draw(currentPolygon, lastPos, polygons, collisions, collision, collisionColor);
 	}
 	delete collision;
 	CloseWindow();
+}
+
+void UpdateShapePos(Polygon* selectedPolygon, const Vector2& mouseDelta)
+{
+	if (selectedPolygon != nullptr)
+	{
+		selectedPolygon->offsetPoints(mouseDelta);
+	}
+}
+
+void DeleteFunctions(float& heldTime, float deltaTime, float holdThreshold, Polygon*& selectedPolygon, Polygon& currentPolygon, Vector2& lastPos, std::vector<Polygon>& polygons)
+{
+	if (IsKeyDown(KEY_BACKSPACE))
+	{
+		heldTime += deltaTime;
+
+		if (heldTime >= holdThreshold)
+		{
+			if (selectedPolygon == nullptr)
+			{
+				DeleteLastPoint(currentPolygon, lastPos);
+			}
+			heldTime -= deltaTime * 2.0f;
+		}
+	}
+	else if (IsKeyReleased(KEY_BACKSPACE))
+	{
+		heldTime = 0.0f;
+	}
+
+	if (IsKeyPressed(KEY_BACKSPACE))
+	{
+		if (selectedPolygon == nullptr)
+		{
+			DeleteLastPoint(currentPolygon, lastPos);
+		}
+		else
+		{
+			DeleteShape(polygons, selectedPolygon);
+		}
+	}
+}
+
+void DeleteShape(std::vector<Polygon>& polygons, Polygon*& selectedPolygon)
+{
+	for (int i = 0; i < polygons.size(); i++)
+	{
+		std::cout << "Trying to delete: " << i << std::endl;
+		if ((*selectedPolygon).getId() == polygons[i].getId())
+		{
+			polygons.erase(polygons.begin() + i);
+			selectedPolygon = nullptr;
+			std::cout << "Delete complete" << std::endl;
+			i = polygons.size();
+		}
+	}
+}
+
+void DeleteLastPoint(Polygon& currentPolygon, Vector2& lastPos)
+{
+	currentPolygon.deletePoint();
+	if (currentPolygon.size() > 1)
+	{
+		lastPos = currentPolygon.getPoints()[currentPolygon.size() - 1];
+	}
+	else
+	{
+		lastPos = { -100,-100 };
+	}
+}
+
+void CloseShape(Polygon& currentPolygon, Color& currentColor, std::vector<Polygon>& polygons)
+{
+	if (IsKeyPressed(KEY_ENTER))
+	{
+
+		if (currentPolygon.size() > 2)
+		{
+
+			if (currentPolygon.addPoint(currentPolygon.getPoints()[0]))
+			{
+
+				currentColor.r = rand() % 255;
+				currentColor.g = rand() % 255;
+				currentColor.b = rand() % 255;
+
+				currentPolygon.addId();
+
+				currentPolygon.setColor(currentColor);
+				polygons.push_back(currentPolygon);
+
+				currentPolygon.Clear();
+			}
+		}
+	}
+}
+
+void SelectShape(const Vector2& mouse, Polygon*& selectedPolygon, std::vector<Polygon>& polygons)
+{
+	if (IsMouseButtonPressed(1))
+	{
+		DrawCircleV(mouse, 15, RAYWHITE);
+		if (selectedPolygon == nullptr)
+		{
+			for (int i = 0; i < polygons.size();i++)
+			{
+
+				for (int j = 0; j < polygons[i].getPoints().size() - 1; j++)
+				{
+
+					if (CircleLineCollision(mouse, 15, { polygons[i].getPoints()[j], polygons[i].getPoints()[j + 1] }))
+					{
+
+						selectedPolygon = &polygons[i];
+						std::cout << "Id: " << selectedPolygon->getId() << std::endl;
+						std::cout << "size: " << selectedPolygon->size() << std::endl;
+					}
+				}
+			}
+
+		}
+	}
+	else if (IsMouseButtonReleased(1))
+	{
+		std::cout << "nullptr" << std::endl;
+		selectedPolygon = nullptr;
+	}
+}
+
+void AddPoint(Vector2& lastPos, const Vector2& mouse, Polygon*& selectedPolygon, Polygon& currentPolygon, int& pointsCreated)
+{
+	if (IsMouseButtonDown(0) && PointsDistance({ lastPos,mouse }) > 10)
+	{
+		if (selectedPolygon != nullptr)
+		{
+			selectedPolygon = nullptr;
+		}
+		else if (currentPolygon.addPoint(mouse))
+		{
+			pointsCreated++;
+			std::cout << "New Point: " << pointsCreated << std::endl;
+			lastPos = mouse;
+		}
+	}
+	else
+	{
+		pointsCreated = 0;
+	}
 }
 
 void Draw(Polygon& currentPolygon, const Vector2& lastPos, std::vector<Polygon>& polygons, std::vector<Point>& collisions, Vector2* collision, Color& collisionColor)
