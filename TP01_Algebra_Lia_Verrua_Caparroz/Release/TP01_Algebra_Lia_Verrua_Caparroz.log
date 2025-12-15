@@ -1,0 +1,25 @@
+﻿  MainLoopManager.cpp
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(67,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(70,24): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(159,23): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(195,19): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(202,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(204,25): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\MainLoopManager.cpp(229,20): warning C4018: '<': signed/unsigned mismatch
+  Polygon.cpp
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\Polygon.cpp(70,20): warning C4018: '<': signed/unsigned mismatch
+  PolygonManager.cpp
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\PolygonManager.cpp(57,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  TP01_Algebra_Lia_Verrua_Caparroz.cpp
+C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\TP01_Algebra_Lia_Verrua_Caparroz\TP01_Algebra_Lia_Verrua_Caparroz.cpp(24,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 262 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+raylib.lib(rcore.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(rcore.obj)' or at 'C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\Release\raylib.pdb'; linking object as if no debug info
+raylib.lib(rglfw.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(rglfw.obj)' or at 'C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\Release\raylib.pdb'; linking object as if no debug info
+raylib.lib(rshapes.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(rshapes.obj)' or at 'C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\Release\raylib.pdb'; linking object as if no debug info
+raylib.lib(rtext.obj) : warning LNK4099: PDB 'raylib.pdb' was not found with 'raylib.lib(rtext.obj)' or at 'C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\Release\raylib.pdb'; linking object as if no debug info
+raylib.lib(rtextures.obj) : warning LNK4099: PDB '' was not found with 'raylib.lib(rtextures.obj)' or at ''; linking object as if no debug info
+raylib.lib(utils.obj) : warning LNK4099: PDB '' was not found with 'raylib.lib(utils.obj)' or at ''; linking object as if no debug info
+  TP01_Algebra_Lia_Verrua_Caparroz.vcxproj -> C:\Users\Voryz\Desktop\Universidad\Image\Algebra\TP01\Release\TP01_Algebra_Lia_Verrua_Caparroz.exe

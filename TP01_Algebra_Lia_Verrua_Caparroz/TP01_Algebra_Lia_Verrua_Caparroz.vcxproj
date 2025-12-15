@@ -139,12 +139,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="MainLoopManager.cpp" />
     <ClCompile Include="Polygon.cpp" />
     <ClCompile Include="PolygonManager.cpp" />
     <ClCompile Include="TP01_Algebra_Lia_Verrua_Caparroz.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Globals.h" />
+    <ClInclude Include="MainLoopManager.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Polygon.h" />
     <ClInclude Include="PolygonManager.h" />
